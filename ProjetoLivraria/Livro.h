@@ -60,8 +60,8 @@ public:
     std::string getNomeParaBusca() const override { return nomeLivro; }
 
     void salvar(std::ofstream& out) const override {
-        out << getId() << ';' << getEditora() << ';' << getPreco() << ';' << getCategoria() << ';'
-            << capaLivro << ';' << autorLivro << ';' << anoLivro << ';' << nomeLivro << '\n';
+        out << "ID: " << getId() << ';' << "Editora: " << getEditora() << ';' << "Preço: " << getPreco() << ';' << "Categoria: " << getCategoria() << ';'
+            << "Tipo de capa: " << capaLivro << ';' << "Autor: " << autorLivro << ';' << "Ano: " << anoLivro << ';' << "Nome: " << nomeLivro << '\n';
     }
 
     static int getNumLivros() { return numLivros; }

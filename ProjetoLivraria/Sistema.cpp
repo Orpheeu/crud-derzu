@@ -19,9 +19,9 @@ void Sistema::salvarDados() {
     if (arqClientes.is_open()) {
         arqClientes << Cliente::getNumClientes() << std::endl;
         for (const auto& cliente : user) {
-            arqClientes << cliente.getId() << ';' 
-                        << cliente.getNome() << ';' 
-                        << cliente.getCpf() << '\n';
+            arqClientes << "ID: " << cliente.getId() << '; ' 
+                        << "Nome: " << cliente.getNome() << '; ' 
+                        << "CPF: " << cliente.getCpf() << '\n';
         }
         arqClientes.close();
     } else {

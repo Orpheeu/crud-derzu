@@ -50,8 +50,8 @@ public:
     std::string getNomeParaBusca() const override { return getEdicao(); } 
 
     void salvar(std::ofstream& out) const override {
-        out << getId() << ';' << getEditora() << ';' << getPreco() << ';' << getCategoria() << ';'
-            << mesRevista << ';' << edicaoRevista << '\n';
+        out << "ID: " << getId() << ';' << "Editora: " << getEditora() << ';' << "Preço: " << getPreco() << ';' << "Categoria: " << getCategoria() << ';'
+            << "Mẽs de publicação: " << mesRevista << ';' << "Edição: " << edicaoRevista << '\n';
     }
     
     static int getNumRevistas() { return numRevistas; }

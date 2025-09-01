@@ -2,6 +2,7 @@
 #include <string>
 #include <limits>
 #include "Sistema.h"
+#include "Sistema.cpp"
 
 void exibirMenu() {
     std::cout << "\n--- MENU LIVRARIA ---\n";
