@@ -418,41 +418,6 @@ public:
         std::cout << "Cliente não encontrado!\n";
     }
 
-    void RemoverClientePorNome(){
-        std::string nomeBusca;
-        std::cout << "Digite o nome para remover: ";
-        std::cin.ignore();
-        getline(std::cin, nomeBusca);
-        
-        std::cout << "\n=== CLIENTES ENCONTRADOS ===\n";
-        bool encontrou = false;
-        int indiceRemover = -1;
-        
-        for(size_t i = 0; i < user.size(); i++) {
-            if(user[i].getNome().find(nomeBusca) != std::string::npos) {
-                std::cout << "[" << user[i].getId() << "] " << user[i].getNome() << " - " << user[i].getCpf() << "\n";
-                if(!encontrou) {
-                    indiceRemover = i;
-                }
-                encontrou = true;
-            }
-        }
-        
-        if(!encontrou) {
-            std::cout << "Nenhum cliente encontrado contendo \"" << nomeBusca << "\".\n";
-            return;
-        }
-        
-        std::string confirmacao;
-        std::cout << "\nConfirma remoção? [1] Sim [0] Não: ";
-        getline(std::cin, confirmacao);
-        
-        if(confirmacao == "1" && indiceRemover != -1) {
-            std::cout << "[LOG] Cliente \"" << user[indiceRemover].getNome() << "\" removido com sucesso!\n";
-            user.erase(user.begin() + indiceRemover);
-        }
-    }
-
     void AlterarLivroPorNome(){
         std::string nomeBusca;
         std::cout << "Digite o nome do livro para alterar: ";
@@ -534,4 +499,156 @@ public:
         }
         std::cout << "Revista não encontrada!\n";
     }
+
+    void RemoverClientePorNome(){
+        std::string nomeBusca;
+        std::cout << "Digite o nome para remover: ";
+        std::cin.ignore();
+        getline(std::cin, nomeBusca);
+        
+        std::cout << "\n=== CLIENTES ENCONTRADOS ===\n";
+        bool encontrou = false;
+        int indiceRemover = -1;
+        
+        for(size_t i = 0; i < user.size(); i++) {
+            if(user[i].getNome().find(nomeBusca) != std::string::npos) {
+                std::cout << "[" << user[i].getId() << "] " << user[i].getNome() << " - " << user[i].getCpf() << "\n";
+                if(!encontrou) {
+                    indiceRemover = i;
+                }
+                encontrou = true;
+            }
+        }
+        
+        if(!encontrou) {
+            std::cout << "Nenhum cliente encontrado contendo \"" << nomeBusca << "\".\n";
+            return;
+        }
+        
+        std::string confirmacao;
+        std::cout << "\nConfirma remoção? [1] Sim [0] Não: ";
+        getline(std::cin, confirmacao);
+        
+        if(confirmacao == "1" && indiceRemover != -1) {
+            std::cout << "[LOG] Cliente \"" << user[indiceRemover].getNome() << "\" removido com sucesso!\n";
+            user.erase(user.begin() + indiceRemover);
+        }
+    }
+    
+    void RemoverLivroPorNome() {
+    std::string nomeBusca;
+    std::cout << "Digite o título do livro para remover: ";
+    std::cin.ignore();
+    getline(std::cin, nomeBusca);
+    
+    std::cout << "\n=== LIVROS ENCONTRADOS ===\n";
+    bool encontrou = false;
+    int indiceRemover = -1;
+
+    for(size_t i = 0; i < item.size(); i++) {
+        Livro* livro = dynamic_cast<Livro*>(item[i].get());
+        if(livro != nullptr && livro->getNome().find(nomeBusca) != std::string::npos) {
+            std::cout << "[" << livro->getId() << "] " 
+                      << livro->getNome() << " - " 
+                      << livro->getAutor() << "\n";
+            if(!encontrou) {
+                indiceRemover = i;
+            }
+            encontrou = true;
+        }
+    }
+
+    if(!encontrou) {
+        std::cout << "Nenhum livro encontrado contendo \"" << nomeBusca << "\".\n";
+        return;
+    }
+
+    std::string confirmacao;
+    std::cout << "\nConfirma remoção? [1] Sim [0] Não: ";
+    getline(std::cin, confirmacao);
+
+    if(confirmacao == "1" && indiceRemover != -1) {
+        Livro* livro = dynamic_cast<Livro*>(item[indiceRemover].get());
+        std::cout << "[LOG] Livro \"" << livro->getNome() << "\" removido com sucesso!\n";
+        item.erase(item.begin() + indiceRemover);
+    }
+}
+
+void RemoverRevistaPorNome() {
+    std::string nomeBusca;
+    std::cout << "Digite a editora ou edição da revista para remover: ";
+    std::cin.ignore();
+    getline(std::cin, nomeBusca);
+    
+    std::cout << "\n=== REVISTAS ENCONTRADAS ===\n";
+    bool encontrou = false;
+    int indiceRemover = -1;
+
+    for(size_t i = 0; i < item.size(); i++) {
+        Revista* revista = dynamic_cast<Revista*>(item[i].get());
+        if(revista != nullptr && 
+           (revista->getEditora().find(nomeBusca) != std::string::npos || 
+            revista->getEdicao().find(nomeBusca) != std::string::npos)) {
+            
+            std::cout << "[" << revista->getId() << "] " 
+                      << revista->getEdicao() << " - " 
+                      << revista->getEditora() << "\n";
+            if(!encontrou) {
+                indiceRemover = i;
+            }
+            encontrou = true;
+        }
+    }
+
+    if(!encontrou) {
+        std::cout << "Nenhuma revista encontrada contendo \"" << nomeBusca << "\".\n";
+        return;
+    }
+
+    std::string confirmacao;
+    std::cout << "\nConfirma remoção? [1] Sim [0] Não: ";
+    getline(std::cin, confirmacao);
+
+    if(confirmacao == "1" && indiceRemover != -1) {
+        Revista* revista = dynamic_cast<Revista*>(item[indiceRemover].get());
+        std::cout << "[LOG] Revista \"" << revista->getEdicao() 
+                  << " - " << revista->getEditora() 
+                  << "\" removida com sucesso!\n";
+        item.erase(item.begin() + indiceRemover);
+    }
+}
+
+void gerarRelatorio() {
+    std::cout << "\n=========== RELATÓRIO DO SISTEMA ===========\n";
+
+    std::cout << "\nCLIENTES:\n";
+    std::cout << "Quantidade de clientes cadastrados: " << user.size() << "\n";
+    if (!user.empty()) {
+        for (auto& cliente : user) {
+            std::cout << " -> " << cliente.getNome() << " - CPF: " << cliente.getCpf() << ".\n";
+        }
+    }
+
+    int qtdLivros = 0, qtdRevistas = 0;
+    double valorTotal = 0.0;
+
+    for (auto& ptr : item) {
+        if (Livro* livro = dynamic_cast<Livro*>(ptr.get())) {
+            qtdLivros++;
+            valorTotal += std::stod(livro->getPreco());
+        }
+        else if (Revista* revista = dynamic_cast<Revista*>(ptr.get())) {
+            qtdRevistas++;
+            valorTotal += std::stod(revista->getPreco());
+        }
+    }
+
+    std::cout << "\nESTOQUE:\n";
+    std::cout << "Quantidade de livros cadastrados: " << qtdLivros << "\n";
+    std::cout << "Quantidade de revistas cadastradas: " << qtdRevistas << "\n";
+    std::cout << "Quantidade total de itens: " << (qtdLivros + qtdRevistas) << "\n";
+    std::cout << "Valor total do estoque: R$ " << valorTotal << "\n";
+    std::cout << "\n============================================\n";
+}
+
 };
