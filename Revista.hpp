@@ -5,7 +5,8 @@
 class Revista : public Item 
 {
     std::string mesRevista, edicaoRevista;
-    static int idRevista, numRevistas;
+    static int  numRevistas;
+    int idRevista = 0;
 
 public:
     Revista(std::string _editoraItem, std::string _precoItem, std::string _categoriaItem,

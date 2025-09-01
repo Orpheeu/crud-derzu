@@ -356,4 +356,182 @@ public:
         }
         std::cout << "Revista alterada com sucesso!\n";
     }
+
+    void ExibirCliente(){
+        std::string nomeBusca;
+        std::cout << "Digite o nome para buscar: ";
+        std::cin.ignore();
+        getline(std::cin, nomeBusca);
+        
+        std::cout << "\n=== CLIENTES ENCONTRADOS ===\n";
+        bool encontrou = false;
+        
+        for(const auto& cliente : user) {
+            if(cliente.getNome().find(nomeBusca) != std::string::npos) {
+                cliente.exibir();
+                encontrou = true;
+            }
+        }
+        
+        if(!encontrou) {
+            std::cout << "Nenhum cliente encontrado contendo \"" << nomeBusca << "\".\n";
+        }
+        system("pause>null");
+    }
+
+    void AlterarClientePorNome(){
+        std::string nomeBusca;
+        std::cout << "Digite o nome para alterar: ";
+        std::cin.ignore();
+        getline(std::cin, nomeBusca);
+        
+        std::vector<int> idsEncontrados;
+        
+        std::cout << "\n=== CLIENTES ENCONTRADOS ===\n";
+        for(const auto& cliente : user) {
+            if(cliente.getNome().find(nomeBusca) != std::string::npos) {
+                std::cout << "[" << cliente.getId() << "] " << cliente.getNome() << " - " << cliente.getCpf() << "\n";
+                idsEncontrados.push_back(cliente.getId());
+            }
+        }
+        
+        if(idsEncontrados.empty()) {
+            std::cout << "Nenhum cliente encontrado contendo \"" << nomeBusca << "\".\n";
+            return;
+        }
+        
+        int idEscolhido;
+        if(idsEncontrados.size() == 1) {
+            idEscolhido = idsEncontrados[0];
+        } else {
+            std::cout << "\nDigite o ID para alterar: ";
+            std::cin >> idEscolhido;
+            std::cin.ignore();
+        }
+        
+        for(auto& cliente : user) {
+            if(cliente.getId() == idEscolhido) {
+                alterarDadosCliente(cliente);
+                return;
+            }
+        }
+        std::cout << "Cliente não encontrado!\n";
+    }
+
+    void RemoverClientePorNome(){
+        std::string nomeBusca;
+        std::cout << "Digite o nome para remover: ";
+        std::cin.ignore();
+        getline(std::cin, nomeBusca);
+        
+        std::cout << "\n=== CLIENTES ENCONTRADOS ===\n";
+        bool encontrou = false;
+        int indiceRemover = -1;
+        
+        for(size_t i = 0; i < user.size(); i++) {
+            if(user[i].getNome().find(nomeBusca) != std::string::npos) {
+                std::cout << "[" << user[i].getId() << "] " << user[i].getNome() << " - " << user[i].getCpf() << "\n";
+                if(!encontrou) {
+                    indiceRemover = i;
+                }
+                encontrou = true;
+            }
+        }
+        
+        if(!encontrou) {
+            std::cout << "Nenhum cliente encontrado contendo \"" << nomeBusca << "\".\n";
+            return;
+        }
+        
+        std::string confirmacao;
+        std::cout << "\nConfirma remoção? [1] Sim [0] Não: ";
+        getline(std::cin, confirmacao);
+        
+        if(confirmacao == "1" && indiceRemover != -1) {
+            std::cout << "[LOG] Cliente \"" << user[indiceRemover].getNome() << "\" removido com sucesso!\n";
+            user.erase(user.begin() + indiceRemover);
+        }
+    }
+
+    void AlterarLivroPorNome(){
+        std::string nomeBusca;
+        std::cout << "Digite o nome do livro para alterar: ";
+        std::cin.ignore();
+        getline(std::cin, nomeBusca);
+        
+        std::vector<int> idsEncontrados;
+        
+        std::cout << "\n=== LIVROS ENCONTRADOS ===\n";
+        for(const auto& itemPtr : item) {
+            Livro* livro = dynamic_cast<Livro*>(itemPtr.get());
+            if(livro != nullptr && livro->getNome().find(nomeBusca) != std::string::npos) {
+                std::cout << "[" << livro->getId() << "] " << livro->getNome() << " - " << livro->getAutor() << "\n";
+                idsEncontrados.push_back(livro->getId());
+            }
+        }
+        
+        if(idsEncontrados.empty()) {
+            std::cout << "Nenhum livro encontrado contendo \"" << nomeBusca << "\".\n";
+            return;
+        }
+        
+        int idEscolhido;
+        if(idsEncontrados.size() == 1) {
+            idEscolhido = idsEncontrados[0];
+        } else {
+            std::cout << "\nDigite o ID para alterar: ";
+            std::cin >> idEscolhido;
+            std::cin.ignore();
+        }
+        
+        for(auto& itemPtr : item) {
+            Livro* livro = dynamic_cast<Livro*>(itemPtr.get());
+            if(livro != nullptr && livro->getId() == idEscolhido) {
+                alterarDadosLivro(*livro);
+                return;
+            }
+        }
+        std::cout << "Livro não encontrado!\n";
+    }
+
+    void AlterarRevistaPorNome(){
+        std::string nomeBusca;
+        std::cout << "Digite o nome da editora para alterar revista: ";
+        std::cin.ignore();
+        getline(std::cin, nomeBusca);
+        
+        std::vector<int> idsEncontrados;
+        
+        std::cout << "\n=== REVISTAS ENCONTRADAS ===\n";
+        for(const auto& itemPtr : item) {
+            Revista* revista = dynamic_cast<Revista*>(itemPtr.get());
+            if(revista != nullptr && revista->getEditora().find(nomeBusca) != std::string::npos) {
+                std::cout << "[" << revista->getId() << "] " << revista->getEditora() << " - " << revista->getEdicao() << "\n";
+                idsEncontrados.push_back(revista->getId());
+            }
+        }
+        
+        if(idsEncontrados.empty()) {
+            std::cout << "Nenhuma revista encontrada contendo \"" << nomeBusca << "\".\n";
+            return;
+        }
+        
+        int idEscolhido;
+        if(idsEncontrados.size() == 1) {
+            idEscolhido = idsEncontrados[0];
+        } else {
+            std::cout << "\nDigite o ID para alterar: ";
+            std::cin >> idEscolhido;
+            std::cin.ignore();
+        }
+        
+        for(auto& itemPtr : item) {
+            Revista* revista = dynamic_cast<Revista*>(itemPtr.get());
+            if(revista != nullptr && revista->getId() == idEscolhido) {
+                alterarDadosRevista(*revista);
+                return;
+            }
+        }
+        std::cout << "Revista não encontrada!\n";
+    }
 };

@@ -6,7 +6,7 @@ class Livro : public Item
 {
     std::string capaLivro, autorLivro, anoLivro, nomeLivro;
     static int numLivros;
-    int idLivro;
+    int idLivro = 0;
 
 
 public:
