@@ -12,23 +12,22 @@ int Revista::numRevistas = 0;
 
 Sistema::Sistema() {}
 
-
 void Sistema::salvarDados() {
     // salvar clientes
     std::ofstream arqClientes("clientes.txt");
     if (arqClientes.is_open()) {
         arqClientes << Cliente::getNumClientes() << std::endl;
         for (const auto& cliente : user) {
-            arqClientes << "ID: " << cliente.getId() << '; ' 
-                        << "Nome: " << cliente.getNome() << '; ' 
-                        << "CPF: " << cliente.getCpf() << '\n';
+            arqClientes << cliente.getId() << ';' 
+                        << cliente.getNome() << ';' 
+                        << cliente.getCpf() << '\n';  
         }
         arqClientes.close();
     } else {
         std::cerr << "ERRO: Nao foi possivel abrir o arquivo de clientes para salvar.\n";
     }
 
-    // salvar itens (livros e revistas)
+    // salvar itens (livros e revistas) 
     std::ofstream arqItens("itens.txt");
     if (arqItens.is_open()) {
         arqItens << Livro::getNumLivros() << std::endl;
@@ -59,7 +58,12 @@ void Sistema::carregarDados() {
             std::getline(ss, idStr, ';');
             std::getline(ss, nome, ';');
             std::getline(ss, cpf, ';');
-            user.emplace_back(std::stoi(idStr), nome, cpf);
+            try {
+                if(!idStr.empty() && !nome.empty() && !cpf.empty()) {
+                    user.emplace_back(std::stoi(idStr), nome, cpf);
+                }
+            } catch(const std::invalid_argument& e) {
+            }
         }
         arqClientes.close();
     }
@@ -85,21 +89,28 @@ void Sistema::carregarDados() {
                 std::string idStr, ed, pr, cat, cap, aut, ano, nome;
                 std::getline(ss, idStr, ';'); std::getline(ss, ed, ';'); std::getline(ss, pr, ';');
                 std::getline(ss, cat, ';'); std::getline(ss, cap, ';'); std::getline(ss, aut, ';');
-                std::getline(ss, ano, ';'); std::getline(ss, nome, '\n'); // lê até o fim da linha
-                item.push_back(std::make_unique<Livro>(std::stoi(idStr), ed, pr, cat, cap, aut, ano, nome));
+                std::getline(ss, ano, ';'); std::getline(ss, nome, '\n');
+                try {
+                    if(!idStr.empty()) {
+                        item.push_back(std::make_unique<Livro>(std::stoi(idStr), ed, pr, cat, cap, aut, ano, nome));
+                    }
+                } catch(const std::invalid_argument& e) {}
             } else if (tipo == "REVISTA") {
                 std::string idStr, ed, pr, cat, mes, edicao;
                 std::getline(ss, idStr, ';'); std::getline(ss, ed, ';'); std::getline(ss, pr, ';');
                 std::getline(ss, cat, ';'); std::getline(ss, mes, ';'); std::getline(ss, edicao, '\n');
-                item.push_back(std::make_unique<Revista>(std::stoi(idStr), ed, pr, cat, mes, edicao));
+                try {
+                    if(!idStr.empty()) {
+                        item.push_back(std::make_unique<Revista>(std::stoi(idStr), ed, pr, cat, mes, edicao));
+                    }
+                } catch(const std::invalid_argument& e) {
+                }
             }
         }
         arqItens.close();
     }
     std::cout << "Dados carregados do sistema anterior (se houver).\n";
 }
-
-// --- MÉTODOS CRUD PRINCIPAIS ---
 
 void Sistema::cadastrarCliente(){
     std::string auxNome, auxCpf;
@@ -186,6 +197,47 @@ void Sistema::buscarPorNome() {
     }
 }
 
+void Sistema::removerCliente() {
+    std::string nomeBusca;
+    std::cout << "Digite o nome do cliente para remover: ";
+    getline(std::cin, nomeBusca);
+    
+    std::vector<int> idsEncontrados;
+    std::cout << "\n=== CLIENTES ENCONTRADOS ===\n";
+    for(const auto& cliente : user) {
+        if(cliente.getNome().find(nomeBusca) != std::string::npos) {
+            std::cout << "ID [" << cliente.getId() << "] - " << cliente.getNome() << " (CPF: " << cliente.getCpf() << ")" << std::endl;
+            idsEncontrados.push_back(cliente.getId());
+        }
+    }
+
+    if(idsEncontrados.empty()) {
+        std::cout << "Nenhum cliente encontrado com esse nome.\n";
+        return;
+    }
+
+    std::cout << "\nDigite o ID do cliente que deseja remover (ou 0 para cancelar): ";
+    int idParaRemover;
+    std::cin >> idParaRemover;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    
+    if (idParaRemover == 0) {
+        std::cout << "Remocao cancelada.\n";
+        return;
+    }
+
+    auto it = std::remove_if(user.begin(), user.end(), [idParaRemover](const Cliente& cliente){
+        return cliente.getId() == idParaRemover;
+    });
+
+    if (it != user.end()) {
+        std::cout << "Cliente \"" << it->getNome() << "\" removido com sucesso!\n";
+        user.erase(it, user.end());
+    } else {
+        std::cout << "ERRO: ID nao encontrado na lista de resultados.\n";
+    }
+}
+
 void Sistema::removerItem() {
     std::string nomeBusca;
     std::cout << "Digite o nome/titulo/edicao do item para remover: ";
@@ -269,6 +321,7 @@ void Sistema::alterarItem() {
     std::cout << "1. Livro (por nome)\n";
     std::cout << "2. Revista (por Edicao)\n";
     std::cout << "3. Cliente (por nome)\n";
+    std::cout << "4. Remover Cliente (por nome)\n";
     std::cout << "---------------------------\n";
     std::cout << "Opcao: ";
     
@@ -280,6 +333,8 @@ void Sistema::alterarItem() {
         AlterarRevistaPorNome();
     } else if (escolha == "3") {
         AlterarClientePorNome();
+    } else if (escolha == "4") {
+        removerCliente();
     } else {
         std::cout << "Opcao invalida!\n";
     }
@@ -413,7 +468,7 @@ void Sistema::alterarDadosLivro(Livro& livro) {
 
     std::cout << "Autor atual: " << livro.getAutor() << ". Novo autor: ";
     getline(std::cin, novoValor);
-    if (!novoValor.empty()) livro.setAutor(static_cast<std::string>(novoValor));
+    if (!novoValor.empty()) livro.setAutor(novoValor);
 
     std::cout << "Editora atual: " << livro.getEditora() << ". Nova editora: ";
     getline(std::cin, novoValor);

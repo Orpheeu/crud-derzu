@@ -12,8 +12,9 @@ void exibirMenu() {
     std::cout << "4. Buscar Item (por nome/titulo/edicao)\n";
     std::cout << "5. Alterar Item\n";
     std::cout << "6. Remover Item\n";
-    std::cout << "7. Exibir Relatorio\n";
-    std::cout << "8. Sair\n";
+    std::cout << "7. Remover Cliente\n";  // Nova opção
+    std::cout << "8. Exibir Relatorio\n";
+    std::cout << "9. Sair\n";  // Mudou de 8 para 9
     std::cout << "------------------------\n";
     std::cout << "Escolha uma opcao: ";
 }
@@ -57,10 +58,13 @@ int main() {
             case 6:
                 sistema.removerItem();
                 break;
-            case 7:
-                 sistema.gerarRelatorio();
+            case 7: 
+                sistema.removerCliente();
                 break;
             case 8:
+                sistema.gerarRelatorio();
+                break;
+            case 9: 
                 std::cout << "Saindo e salvando dados...\n";
                 break;
             default:
@@ -68,7 +72,7 @@ int main() {
                 break;
         }
 
-    } while (opcao != 8); 
+    } while (opcao != 9); 
 
     sistema.salvarDados();
 

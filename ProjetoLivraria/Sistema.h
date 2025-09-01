@@ -28,6 +28,7 @@ public:
     void buscarPorNome();
     void alterarItem();
     void removerItem();
+    void removerCliente();
     void gerarRelatorio();
 
     void salvarDados();
